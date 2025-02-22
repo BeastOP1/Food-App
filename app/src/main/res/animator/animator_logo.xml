@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="1000"
+    android:interpolator="@android:anim/overshoot_interpolator">
+<!--    We want to make it moveable from x axis as well as y axis-->
+    <propertyValuesHolder
+        android:propertyName="scaleX"
+        android:valueType="floatType"
+        android:valueTo="0.5"
+        android:valueFrom="0.0" />
+
+
+    <propertyValuesHolder
+        android:propertyName="scaleY"
+        android:valueType="floatType"
+        android:valueTo="0.5"
+        android:valueFrom="0.0" />
+
+</objectAnimator>

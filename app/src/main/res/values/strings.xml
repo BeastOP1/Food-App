@@ -2,9 +2,8 @@
     <string name="app_name">FoodApp</string>
     <string name="skip">Skip\n</string>
     <string name="welcome_to">Welcome to</string>
-    <string name="foodhub">FoodHub</string>
     <string name="description">Your favourite foods delivered fast at your door.</string>
-    <string name="already_have_an_account">ALready have an account?</string>
+    <string name="already_have_an_account">Already have an account?</string>
     <string name="sign_in">"Sign in "</string>
     <string name="sign_in_with">sign in with</string>
     <string name="facebook">FACEBOOK</string>
@@ -16,6 +15,8 @@
     <string name="your_password">Your password</string>
     <string name="password">Password</string>
     <string name="e_mail">E-mail</string>
-    <string name="full_name">Full name</string>
+    <string name="full_name" translatable="false">Full name</string>
     <string name="log_in">Login</string>
+    <string name="food_hub">FoodHub</string>
+    <string name="forgot_password">Forgot password?</string>
 </resources>

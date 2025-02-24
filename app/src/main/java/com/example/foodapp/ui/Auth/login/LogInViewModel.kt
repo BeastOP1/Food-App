@@ -1,10 +1,9 @@
-package com.example.foodapp.ui.Auth.sigin
+package com.example.foodapp.ui.Auth.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodapp.data.FoodApi
 import com.example.foodapp.data.models.LogInRequest
-import com.example.foodapp.data.models.SignUpRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

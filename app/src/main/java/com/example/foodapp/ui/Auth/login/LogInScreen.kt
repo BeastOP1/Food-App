@@ -1,4 +1,4 @@
-package com.example.foodapp.ui.Auth.sigin
+package com.example.foodapp.ui.Auth.login
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
@@ -8,7 +8,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,12 +29,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,11 +47,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -65,9 +74,7 @@ import androidx.navigation.NavHostController
 import com.example.foodapp.R
 import com.example.foodapp.navigation.AuthScreen
 import com.example.foodapp.navigation.Home
-import com.example.foodapp.navigation.LogIn
 import com.example.foodapp.navigation.SignUp
-import com.example.foodapp.ui.Auth.signup.SIgnUpViewModel
 import com.example.foodapp.ui.common.FoodButton
 import com.example.foodapp.ui.common.FoodTextFiled
 import com.example.foodapp.ui.common.Sign_in_Method
@@ -143,25 +150,29 @@ fun LogInScreen(logInViewModel: LogInViewModel, navController: NavHostController
             modifier = Modifier.fillMaxWidth()
         )
 
-        Box(
-            modifier = Modifier.padding(32.dp)
-        ) {
-
-            IconButton(
+        Box(modifier = Modifier
+            .padding(32.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .size(45.dp)
+            .background(Color.White)
+            .clickable(
+                role = Role.Button,
                 onClick = {
                     navController.navigateUp()
                 },
-                modifier = Modifier,
-            ) {
-                Card(
-                    shape = RoundedCornerShape(10.dp),
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBackIosNew,
-                        contentDescription = null
-                    )
-                }
-            }
+                indication = rememberRipple(
+                    bounded = true,
+                    radius = 25.dp
+                ),
+                interactionSource = remember { MutableInteractionSource() }
+            ), contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = Icons.Filled.ArrowBackIosNew,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp)
+            )
+
+
         }
 
         Column(
@@ -172,7 +183,7 @@ fun LogInScreen(logInViewModel: LogInViewModel, navController: NavHostController
         ) {
 
             Text(
-                text = stringResource(R.string.sign_up),
+                text = stringResource(R.string.log_in),
                 fontSize = 28.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.SemiBold,
@@ -253,7 +264,7 @@ fun LogInScreen(logInViewModel: LogInViewModel, navController: NavHostController
                 Text(
                     text = stringResource(R.string.forgot_password),
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Normal,
                     color = Orange,
                     textDecoration = TextDecoration.None,
                     lineHeight = 16.sp
@@ -282,10 +293,13 @@ fun LogInScreen(logInViewModel: LogInViewModel, navController: NavHostController
                         } else {
 
                             Text(
-                                text = stringResource(R.string.sign_up).toUpperCase(Locale.current),
+                                text = stringResource(R.string.log_in).toUpperCase(Locale.current),
                                 fontSize = 16.sp,
-                                modifier = Modifier.clickable(enabled = true, onClick = {navController.navigate(
-                                    SignUp)}),
+                                modifier = Modifier.clickable(enabled = true, onClick = {
+                                    navController.navigate(
+                                        SignUp
+                                    )
+                                }),
                                 letterSpacing = 2.sp
                             )
                         }

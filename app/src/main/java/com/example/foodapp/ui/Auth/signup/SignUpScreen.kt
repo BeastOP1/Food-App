@@ -1,5 +1,11 @@
 package com.example.foodapp.ui.Auth.signup
 
+import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardActions
@@ -21,16 +28,19 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,19 +57,79 @@ import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.example.foodapp.ui.common.FoodTextFiled
 import com.example.foodapp.ui.theme.FoodAppTheme
 import com.example.foodapp.R
+import com.example.foodapp.navigation.AuthScreen
+import com.example.foodapp.navigation.Home
+import com.example.foodapp.navigation.LogIn
 import com.example.foodapp.ui.common.FoodButton
 import com.example.foodapp.ui.common.Sign_in_Method
 import com.example.foodapp.ui.theme.Orange
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun SignUpScreen(modifier: Modifier = Modifier) {
-
-    val name = remember { mutableStateOf("hassan") }
-
+fun SignUpScreen(
+    navController: NavController,
+    sIgnUpViewModel: SIgnUpViewModel
+) {
+    val name = sIgnUpViewModel.name.collectAsStateWithLifecycle()
+    val email = sIgnUpViewModel.email.collectAsStateWithLifecycle()
+    val password = sIgnUpViewModel.password.collectAsStateWithLifecycle()
+    val uiState = sIgnUpViewModel.uiState.collectAsState()
     var passwordVisible by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val isLoading = remember { mutableStateOf(false) }
+    val isError = remember { mutableStateOf<String?>(null) }
+    when (uiState.value) {
+        SIgnUpViewModel.SignUpStatus.Failure -> {
+            isError.value = "Failed"
+            isLoading.value = false
+        }
+
+        SIgnUpViewModel.SignUpStatus.Loading -> {
+            isError.value = ""
+            isLoading.value = true
+        }
+
+        SIgnUpViewModel.SignUpStatus.Success -> {
+            isError.value = ""
+            isLoading.value = false
+        }
+
+        else -> {
+            isError.value = ""
+            isLoading.value = false
+
+        }
+    }
+
+    LaunchedEffect(true) {
+        sIgnUpViewModel.navigationEvent.collectLatest {
+            when (it) {
+                SIgnUpViewModel.SignUpNavigation.NavigateToHome -> {
+                    navController.navigate(Home){
+                        popUpTo(AuthScreen){
+                            inclusive  = true
+                        }
+                    }
+                    Toast.makeText(context, "SignUp SuccessFull", Toast.LENGTH_SHORT).show()
+                }
+                SIgnUpViewModel.SignUpNavigation.NavigateToLogIN -> {
+                    navController.navigate(LogIn)
+                }
+
+                else -> {
+                    Toast.makeText(context, "SignUp Failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -93,8 +163,11 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 FoodTextFiled(
-                    value = "",
-                    onValueChange = {},
+                    value = name.value,
+                    onValueChange = {
+                        sIgnUpViewModel.onNameChange(it)
+
+                    },
                     label = R.string.full_name,
                     placeholder = {
                         Text(text = stringResource(R.string.your_name))
@@ -115,8 +188,11 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
                 )
 
                 FoodTextFiled(
-                    value = "",
-                    onValueChange = {},
+                    value = email.value,
+                    onValueChange = {
+                        sIgnUpViewModel.onEmailChange(it)
+
+                    },
                     placeholder = {
                         Text(text = stringResource(R.string.your_email_or_phone))
                     },
@@ -138,15 +214,17 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
 
 
                 FoodTextFiled(
-                    value = "",
-                    onValueChange = {},
+                    value = password.value,
+                    onValueChange = {
+                        sIgnUpViewModel.onPasswordChange(it)
+                    },
                     placeholder = {
                         Text(text = stringResource(R.string.your_password))
                     },
                     label = R.string.password,
-                    modifier = Modifier.fillMaxWidth()
-                        .height(60.dp)
-                        ,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Words,
                         imeAction = ImeAction.Done,
@@ -175,9 +253,8 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
                     visualTransformation = PasswordVisualTransformation()
                 )
 
-
                 FoodButton(
-                    onClick = {},
+                    onClick = sIgnUpViewModel::onSignUpClick,
                     modifier = Modifier
                         .width(240.dp)
                         .height(60.dp),
@@ -189,11 +266,24 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
                         defaultElevation = 10.dp
                     )
                 ) {
-                    Text(
-                        text = stringResource(R.string.sign_up).toUpperCase(Locale.current),
-                        fontSize = 16.sp,
-                        letterSpacing = 2.sp
-                    )
+
+                    AnimatedContent(targetState = isLoading.value, label = "", transitionSpec = {
+                        fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
+                    }) {
+                        if(it){
+                            LinearProgressIndicator(
+                                color = Color.Yellow,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }else {
+
+                            Text(
+                                text = stringResource(R.string.sign_up).toUpperCase(Locale.current),
+                                fontSize = 16.sp,
+                                letterSpacing = 2.sp
+                            )
+                        }
+                    }
                 }
 
 
@@ -235,7 +325,7 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
 fun PreviewSignUpScreen(modifier: Modifier = Modifier) {
 
     FoodAppTheme {
-        SignUpScreen()
+//        SignUpScreen()
 
     }
 

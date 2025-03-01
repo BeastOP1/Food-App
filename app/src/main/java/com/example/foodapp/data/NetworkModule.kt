@@ -1,5 +1,7 @@
 package com.example.foodapp.data
 
+import com.example.foodapp.ui.theme.Constant
+import com.example.foodapp.ui.theme.Constant.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,7 +19,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(): Retrofit{
         return Retrofit.Builder()
-            .baseUrl("https://github.com")
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

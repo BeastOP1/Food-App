@@ -332,7 +332,9 @@ fun LogInScreen(logInViewModel: LogInViewModel, navController: NavHostController
                 )
             }
 
-            Sign_in_Method(onGoogleClick = {}, onFacebookClick = {}, color = Color.Gray)
+            Sign_in_Method(onGoogleClick = {
+                logInViewModel.onGoogleSignInClicked(context)
+            }, onFacebookClick = {}, color = Color.Gray)
         }
 
     }

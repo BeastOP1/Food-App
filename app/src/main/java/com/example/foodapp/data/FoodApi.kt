@@ -2,6 +2,7 @@ package com.example.foodapp.data
 
 import com.example.foodapp.data.models.AuthResponse
 import com.example.foodapp.data.models.LogInRequest
+import com.example.foodapp.data.models.OAuthRequest
 import com.example.foodapp.data.models.SignUpRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -21,6 +22,9 @@ interface FoodApi {
     suspend fun login(
         @Body request: LogInRequest
     ): AuthResponse
+
+    @POST("/auth/oauth")
+    suspend fun oAuth(@Body request: OAuthRequest): AuthResponse
 
 
 }
